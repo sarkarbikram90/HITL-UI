@@ -7,8 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test-frontend:
-    name: Frontend Tests
+  verify-frontend:
+    name: Frontend Verify (lint / typecheck / build)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,8 +39,59 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Run frontend tests (Vitest)
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Typecheck
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+  test-frontend:
+    name: Frontend Tests
+    needs: verify-frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Cache frontend node_modules
+        uses: actions/cache@v4
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json','frontend/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache frontend npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run frontend tests with coverage (Vitest)
         working-directory: frontend
         env:
           CI: true
-        run: npm test --silent
+        run: npm run test:coverage --silent
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage
