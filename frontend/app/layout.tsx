@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
-import dynamic from "next/dynamic";
-
-const MockDebugPanel = dynamic(() => import("@/components/mocks/MockDebugPanel").then((m) => m.MockDebugPanel), { ssr: false });
+import MockDebugPanelLoader from "@/components/mocks/MockDebugPanelLoader"; // ← changed
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,7 +31,7 @@ export default function RootLayout({
       >
         <Providers>
           {children}
-          {process.env.NODE_ENV === "development" ? <MockDebugPanel /> : null}
+          {process.env.NODE_ENV === "development" ? <MockDebugPanelLoader /> : null}  {/* ← changed */}
         </Providers>
       </body>
     </html>

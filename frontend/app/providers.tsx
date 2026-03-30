@@ -21,7 +21,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={client}>
       <AuditProvider>
-        <ThemeProvider attribute="class" defaultTheme="system">
+        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange forcedTheme="light">
           {children}
         </ThemeProvider>
       </AuditProvider>

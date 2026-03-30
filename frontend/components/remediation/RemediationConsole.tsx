@@ -144,10 +144,19 @@ export function RemediationConsole() {
         <Sidebar counts={countsData?.counts} />
         <main className="flex min-w-0 flex-1 flex-col relative overflow-hidden">
           {actionMessage && (
-            <div className={`m-4 rounded-md px-4 py-2 text-sm ${actionMessage.type === 'success' ? 'bg-emerald-700/20 text-emerald-200' : 'bg-red-700/20 text-red-200'}`}>
-              <div className="flex items-center justify-between">
+            <div className={`m-4 rounded-lg px-4 py-3 text-sm font-medium border ${actionMessage.type === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+              <div className="flex items-center justify-between gap-3">
                 <div>{actionMessage.message}</div>
-                <button className="ml-4" onClick={() => setActionMessage(null)}>Dismiss</button>
+                <button 
+                  onClick={() => setActionMessage(null)}
+                  className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap ${
+                    actionMessage.type === 'success' 
+                      ? 'hover:bg-emerald-100 text-emerald-600' 
+                      : 'hover:bg-red-100 text-red-600'
+                  }`}
+                >
+                  Dismiss
+                </button>
               </div>
             </div>
           )}

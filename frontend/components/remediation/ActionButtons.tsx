@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Check, Pencil, X, Play, RefreshCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import type { IncidentRemediation } from "@/types/incident-remediation";
 
 export function ActionButtons({
@@ -25,70 +24,61 @@ export function ActionButtons({
   const isFailed = row.status === "Failed";
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex items-center gap-2">
       {isPending && (
         <>
-          <Button
+          <button
             type="button"
-            size="sm"
-            variant="outline"
-            className="border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 glass"
             disabled={disabled}
             onClick={(e) => { e.stopPropagation(); onAccept(row.incidentId); }}
+            className="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Check className="mr-1 h-3.5 w-3.5" />
+            <Check className="h-3.5 w-3.5" />
             Accept
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            size="sm"
-            variant="outline"
-            className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 glass"
             disabled={disabled}
             onClick={(e) => { e.stopPropagation(); onModify(row); }}
+            className="inline-flex items-center gap-1.5 rounded-md bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-700 border border-gray-200 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Pencil className="mr-1 h-3.5 w-3.5" />
+            <Pencil className="h-3.5 w-3.5" />
             Modify
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            size="sm"
-            variant="outline"
-            className="border-red-500/50 text-red-400 hover:bg-red-500/10 hover:text-red-300 glass"
             disabled={disabled}
             onClick={(e) => { e.stopPropagation(); onReject(row.incidentId); }}
+            className="inline-flex items-center gap-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 border border-red-200 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <X className="mr-1 h-3.5 w-3.5" />
+            <X className="h-3.5 w-3.5" />
             Reject
-          </Button>
+          </button>
         </>
       )}
 
       {isApproved && onExecute && (
-        <Button
+        <button
           type="button"
-          size="sm"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_rgba(var(--color-primary),0.3)]"
           disabled={disabled}
-          onClick={(e) => { e.stopPropagation(); onExecute && onExecute(row.incidentId); }}
+          onClick={(e) => { e.stopPropagation(); onExecute(row.incidentId); }}
+          className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Play className="mr-1 h-3.5 w-3.5 fill-current" />
+          <Play className="h-3.5 w-3.5 fill-current" />
           Execute
-        </Button>
+        </button>
       )}
 
       {isFailed && (
-        <Button
+        <button
           type="button"
-          size="sm"
-          variant="outline"
-          className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10 glass"
           disabled={disabled}
           onClick={(e) => { e.stopPropagation(); onModify(row); }}
+          className="inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-2.5 py-1.5 text-xs font-medium text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <RefreshCcw className="mr-1 h-3.5 w-3.5" />
+          <RefreshCcw className="h-3.5 w-3.5" />
           Retry
-        </Button>
+        </button>
       )}
     </div>
   );

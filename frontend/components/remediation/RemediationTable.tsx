@@ -10,7 +10,6 @@ import {
 } from "@tanstack/react-table";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import type { IncidentRemediation, SortField } from "@/types/incident-remediation";
-import { Badge } from "@/components/ui/badge";
 import { SeverityBadge } from "@/components/remediation/SeverityBadge";
 import { StatusBadge } from "@/components/remediation/StatusBadge";
 import { ActionButtons } from "@/components/remediation/ActionButtons";
@@ -72,7 +71,7 @@ export function RemediationTable({
         cell: ({ row }) => (
           <button
             onClick={() => toggleRow(row.original.incidentId)}
-            className="p-1 hover:bg-muted/50 rounded transition-colors"
+            className="inline-flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded transition-colors text-gray-500 hover:text-gray-700"
           >
             {expandedRows.has(row.original.incidentId) ? (
               <ChevronDown className="h-4 w-4" />
@@ -93,7 +92,7 @@ export function RemediationTable({
         accessorKey: "incidentId",
         header: "ID",
         cell: ({ row }) => (
-          <span className="font-mono text-xs font-bold text-primary">{row.original.incidentId}</span>
+          <span className="font-mono text-xs font-semibold text-blue-600 hover:text-blue-800 cursor-pointer hover:underline">{row.original.incidentId}</span>
         ),
       },
       {
@@ -101,7 +100,7 @@ export function RemediationTable({
         accessorKey: "anomalyName",
         header: "Anomaly",
         cell: ({ row }) => (
-            <div className="max-w-[150px] truncate font-medium" title={row.original.anomalyName}>
+            <div className="max-w-xs truncate text-sm font-medium text-gray-900" title={row.original.anomalyName}>
                 {row.original.anomalyName}
             </div>
         ),
@@ -110,7 +109,11 @@ export function RemediationTable({
         id: "resource",
         accessorKey: "resource",
         header: "Resource",
-        cell: ({ row }) => <Badge variant="outline" className="glass text-[10px]">{row.original.resource}</Badge>,
+        cell: ({ row }) => (
+          <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
+            {row.original.resource}
+          </span>
+        ),
       },
       {
         id: "createdAt",
@@ -124,7 +127,7 @@ export function RemediationTable({
                 d.getUTCDate()
               ).padStart(2, "0")} ${String(d.getUTCHours()).padStart(2, "0")}:${String(d.getUTCMinutes()).padStart(2, "0")}`
             : "-";
-          return <span className="text-xs text-muted-foreground font-mono">{txt}</span>;
+          return <span className="text-xs text-gray-500 font-mono">{txt}</span>;
         },
       },
       {
@@ -132,7 +135,7 @@ export function RemediationTable({
         accessorKey: "proposedCommand",
         header: "Proposed Command",
         cell: ({ row }) => (
-          <code className="block max-w-[200px] truncate p-1 bg-black/30 rounded border border-white/5 text-[10px] text-emerald-500 font-mono">
+          <code className="inline-flex max-w-xs truncate px-2 py-1 bg-gray-100 rounded border border-gray-200 text-xs text-gray-700 font-mono">
             {row.original.proposedCommand || "N/A"}
           </code>
         ),
@@ -171,40 +174,43 @@ export function RemediationTable({
   });
 
   return (
-    <div className="flex flex-col glass rounded-xl border border-[var(--color-border)] overflow-hidden shadow-2xl">
+    <div className="flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1000px] border-collapse text-left text-sm">
+        <table className="w-full border-collapse text-left text-sm">
           <thead>
             {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id} className="border-b border-[var(--color-border)]">
+              <tr key={hg.id} className="border-b border-gray-200 bg-gray-50">
                 {hg.headers.map((h) => (
-                  <th key={h.id} className="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--color-muted-foreground)] sticky top-0 z-10 bg-[var(--color-muted)]/60">
+                  <th key={h.id} className="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 bg-gray-50">
                     {flexRender(h.column.columnDef.header, h.getContext())}
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-[var(--color-border)]">
+          <tbody className="divide-y divide-gray-200">
             {isLoading ? (
-              <tr><td colSpan={columns.length} className="px-4 py-20 text-center animate-pulse">Analyzing system status...</td></tr>
+              <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500 animate-pulse">Analyzing system status...</td></tr>
             ) : data.length === 0 ? (
-              <tr><td colSpan={columns.length} className="px-4 py-20 text-center text-muted-foreground italic">No incidents requiring attention.</td></tr>
+              <tr><td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500 italic">No incidents requiring attention.</td></tr>
             ) : (
               table.getRowModel().rows.map((row) => (
                 <React.Fragment key={row.id}>
                   <tr
                     onClick={() => onRowClick && onRowClick(row.original)}
-                    className={cn("cursor-pointer transition-colors hover:bg-primary/5", expandedRows.has(row.original.incidentId) && "bg-primary/5")}
+                    className={cn(
+                      "cursor-pointer transition-colors hover:bg-blue-50",
+                      expandedRows.has(row.original.incidentId) && "bg-blue-50"
+                    )}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-4 py-3 align-middle">{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                      <td key={cell.id} className="px-6 py-4 align-middle">{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
                     ))}
                   </tr>
                   {expandedRows.has(row.original.incidentId) && (
-                    <tr className="bg-muted/10 border-b border-[var(--color-border)]">
+                    <tr className="bg-gray-50 border-b border-gray-200">
                       <td colSpan={columns.length}>
-                        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="animate-in fade-in slide-in-from-top-2 duration-300 p-6">
                           <ExecutionTimeline incidentId={row.original.incidentId} />
                         </div>
                       </td>

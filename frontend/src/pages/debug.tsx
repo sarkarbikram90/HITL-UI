@@ -6,14 +6,13 @@ import * as mockApi from "@/mocks/api";
 import { mockControls } from "@/hooks/use-incidents-api";
 import { incidentsQueryKeys } from "@/hooks/use-incidents-api";
 
-if (process.env.NODE_ENV !== "development") {
-  // hide in production
-  export default function DebugOff() {
-    return null;
-  }
+function DebugOff() {
+  return null;
 }
 
-export default function DebugPage() {
+function DebugPage() {
+  // Debug feature is disabled
+  return null;
   const qc = useQueryClient();
   const [failure, setFailure] = React.useState(() => mockApi.getFailureRate?.() ?? 0);
   const [enableFailures, setEnableFailures] = React.useState(() => (mockApi.getFailureRate?.() ?? 0) > 0);
@@ -199,3 +198,6 @@ export default function DebugPage() {
     </div>
   );
 }
+
+// export a no-op in production builds
+export default process.env.NODE_ENV !== "development" ? DebugOff : DebugPage;

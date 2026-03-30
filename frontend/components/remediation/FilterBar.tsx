@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 
 export function FilterBar({
   severity,
@@ -37,67 +36,64 @@ export function FilterBar({
   onSearchChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-col gap-4 border-b border-[var(--color-border)] bg-[var(--color-card)] px-6 py-4 lg:flex-row lg:items-end lg:justify-between">
-      <div className="grid w-full gap-4 sm:grid-cols-3 lg:max-w-3xl">
-        <div className="space-y-1.5">
-          <Label htmlFor="filter-severity">Severity</Label>
-          <Select value={severity} onValueChange={onSeverityChange}>
-            <SelectTrigger id="filter-severity" className="w-full">
-              <SelectValue placeholder="All severities" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All severities</SelectItem>
-              {severities.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {s}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="filter-category">Category</Label>
-          <Select value={category} onValueChange={onCategoryChange}>
-            <SelectTrigger id="filter-category" className="w-full">
-              <SelectValue placeholder="All categories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All categories</SelectItem>
-              {categories.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="filter-resource">Resource</Label>
-          <Select value={resource} onValueChange={onResourceChange}>
-            <SelectTrigger id="filter-resource" className="w-full">
-              <SelectValue placeholder="All resources" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All resources</SelectItem>
-              {resources.map((r) => (
-                <SelectItem key={r} value={r}>
-                  {r}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <div className="relative w-full lg:max-w-sm">
-        <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-muted-foreground)]" />
+    <div className="flex items-center gap-3 border-b border-gray-200 bg-white px-6 py-4">
+      {/* Search Bar */}
+      <div className="relative flex-1 max-w-sm">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <Input
-          className="pl-9"
+          className="pl-9 h-9 text-sm border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           placeholder="Search incident ID or anomaly…"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           aria-label="Search by incident ID or anomaly name"
         />
       </div>
+
+      {/* Filter Dropdowns */}
+      <Select value={severity} onValueChange={onSeverityChange}>
+        <SelectTrigger className="w-32 h-9 text-sm border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+          <SelectValue placeholder="Severity" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All severities</SelectItem>
+          {severities.map((s) => (
+            <SelectItem key={s} value={s}>
+              {s}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={category} onValueChange={onCategoryChange}>
+        <SelectTrigger className="w-32 h-9 text-sm border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+          <SelectValue placeholder="Category" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All categories</SelectItem>
+          {categories.map((c) => (
+            <SelectItem key={c} value={c}>
+              {c}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={resource} onValueChange={onResourceChange}>
+        <SelectTrigger className="w-32 h-9 text-sm border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+          <SelectValue placeholder="Resource" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All resources</SelectItem>
+          {resources.map((r) => (
+            <SelectItem key={r} value={r}>
+              {r}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
     </div>
   );
 }

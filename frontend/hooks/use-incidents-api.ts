@@ -19,7 +19,7 @@ import * as mockApi from "@/mocks/api";
 
 // Runtime mock controls (toggle polling at runtime)
 export const mockControls = {
-  autoRefreshEnabled: true,
+  autoRefreshEnabled: false,
   setAutoRefresh(v: boolean) {
     this.autoRefreshEnabled = v;
   },

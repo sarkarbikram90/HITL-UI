@@ -1,25 +1,21 @@
 import * as React from "react";
 import type { Status } from "@/types/incident-remediation";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const statusStyles: Record<Status, string> = {
-  Pending: "border-slate-500 bg-slate-500/10 text-slate-300",
-  Approved: "border-emerald-500 bg-emerald-500/10 text-emerald-400",
-  Rejected: "border-red-500 bg-red-500/10 text-red-400",
-  Modified: "border-amber-500 bg-amber-500/10 text-amber-400",
-  Executing: "border-blue-500 bg-blue-500/10 text-blue-400 animate-pulse",
-  Completed: "border-emerald-400 bg-emerald-400/20 text-emerald-300 border-2",
-  Failed: "border-rose-600 bg-rose-600/10 text-rose-400",
+  Pending: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+  Approved: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+  Rejected: "bg-red-50 text-red-700 border border-red-200",
+  Modified: "bg-blue-50 text-blue-700 border border-blue-200",
+  Executing: "bg-blue-50 text-blue-700 border border-blue-200 animate-pulse",
+  Completed: "bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold",
+  Failed: "bg-red-50 text-red-700 border border-red-200",
 };
 
 export function StatusBadge({ status }: { status: Status }) {
   return (
-    <Badge
-      variant="outline"
-      className={cn("font-medium px-2 py-0.5 whitespace-nowrap", statusStyles[status])}
-    >
+    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap", statusStyles[status])}>
       {status}
-    </Badge>
+    </span>
   );
 }
