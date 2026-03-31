@@ -102,7 +102,7 @@ function startExecutionSimulation(incidentId: string) {
       step.status = failed ? "Failed" : "Success";
       step.output = failed ? "Step failed due to simulated error." : "Step completed successfully.";
       if (idx === steps.length - 1) {
-        const finalStatus = steps.some((s) => s.status === "Failed") ? "Rejected" : "Approved";
+        const finalStatus = steps.some((s) => s.status === "Failed") ? "Failed" : "Completed";
         incidents = incidents.map((i) => (i.id === incidentId ? { ...i, status: finalStatus } : i));
         addAuditEntry(incidentId, "execution:finished", `Execution finished, status=${finalStatus}`);
       }
@@ -110,11 +110,32 @@ function startExecutionSimulation(incidentId: string) {
   });
 }
 
+// Maps sidebar tab → incident status for filtering
+const TAB_STATUS_MAP: Record<string, string | null> = {
+  incoming: null,          // show all
+  approved: "Approved",
+  rejected: "Rejected",
+  modified: "Modified",
+  "pending-task": "Pending",
+  executing: "Executing",
+  completed: "Completed",
+  failed: "Failed",
+};
+
 export async function fetchIncidents(params?: Record<string, string | number | undefined>) {
   await delay(defaultDelay);
-  // simple filtering: severity, category, resource, search
   let out = incidents.slice();
-  if (!params) return { data: out, total: out.length, page: 1, pageSize: out.length };
+  if (!params) return { data: out.map(mapToIncidentRemediation), total: out.length, page: 1, pageSize: out.length };
+
+  // Tab-based filtering
+  const tab = params["tab"] as string | undefined;
+  if (tab && tab in TAB_STATUS_MAP) {
+    const statusFilter = TAB_STATUS_MAP[tab];
+    if (statusFilter) {
+      out = out.filter((i) => i.status === statusFilter);
+    }
+  }
+
   const severity = params["severity"] as string | undefined;
   const category = params["category"] as string | undefined;
   const resource = params["resource"] as string | undefined;
@@ -144,11 +165,16 @@ export async function fetchIncidents(params?: Record<string, string | number | u
 
 export async function fetchCounts() {
   await delay(200);
+  // Return counts keyed by sidebar tab name (not by Status)
   const counts: Record<string, number> = {
-    Pending: incidents.filter((i) => i.status === "Pending").length,
-    Approved: incidents.filter((i) => i.status === "Approved").length,
-    Rejected: incidents.filter((i) => i.status === "Rejected").length,
-    Modified: incidents.filter((i) => i.status === "Modified").length,
+    incoming: incidents.length,
+    approved: incidents.filter((i) => i.status === "Approved").length,
+    rejected: incidents.filter((i) => i.status === "Rejected").length,
+    modified: incidents.filter((i) => i.status === "Modified").length,
+    "pending-task": incidents.filter((i) => i.status === "Pending").length,
+    executing: incidents.filter((i) => i.status === "Executing").length,
+    completed: incidents.filter((i) => i.status === "Completed").length,
+    failed: incidents.filter((i) => i.status === "Failed").length,
   };
   return { counts };
 }

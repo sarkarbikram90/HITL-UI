@@ -6,47 +6,43 @@ import type { IncidentRemediation } from "@/types/incident-remediation";
 import { cn } from "@/lib/utils";
 
 function ActionBtn({
-  children,
   onClick,
   disabled,
   variant,
-  className,
+  icon: Icon,
+  label,
 }: {
-  children: React.ReactNode;
   onClick: (e: React.MouseEvent) => void;
   disabled?: boolean;
   variant: "accept" | "modify" | "reject" | "execute" | "retry";
-  className?: string;
+  icon: typeof Check;
+  label: string;
 }) {
   const styles = {
-    accept:
-      "text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800",
-    modify:
-      "text-gray-600 hover:bg-gray-100 hover:text-gray-800",
-    reject:
-      "text-red-600 hover:bg-red-50 hover:text-red-700",
-    execute:
-      "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
-    retry:
-      "text-blue-600 hover:bg-blue-50 hover:text-blue-700",
+    accept: "text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700",
+    modify: "text-gray-500 hover:bg-gray-100 hover:text-gray-700",
+    reject: "text-red-500 hover:bg-red-50 hover:text-red-600",
+    execute: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm",
+    retry: "text-blue-600 hover:bg-blue-50 hover:text-blue-700",
   };
 
   return (
     <button
       type="button"
+      title={label}
+      aria-label={label}
       disabled={disabled}
       onClick={(e) => {
         e.stopPropagation();
         onClick(e);
       }}
       className={cn(
-        "inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors duration-100 cursor-pointer",
+        "inline-flex items-center justify-center w-7 h-7 rounded-md transition-colors duration-100 cursor-pointer",
         "disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none",
-        styles[variant],
-        className
+        styles[variant]
       )}
     >
-      {children}
+      <Icon className="h-3.5 w-3.5" />
     </button>
   );
 }
@@ -71,56 +67,57 @@ export function ActionButtons({
   const isFailed = row.status === "Failed";
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-0.5 whitespace-nowrap">
       {isPending && (
         <>
           <ActionBtn
             variant="accept"
+            icon={Check}
+            label="Accept remediation"
             disabled={disabled}
             onClick={() => onAccept(row.incidentId)}
-          >
-            <Check className="h-3.5 w-3.5" />
-            <span className="hidden xl:inline">Accept</span>
-          </ActionBtn>
+          />
           <ActionBtn
             variant="modify"
+            icon={Pencil}
+            label="Modify command"
             disabled={disabled}
             onClick={() => onModify(row)}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            <span className="hidden xl:inline">Modify</span>
-          </ActionBtn>
+          />
           <ActionBtn
             variant="reject"
+            icon={X}
+            label="Reject action"
             disabled={disabled}
             onClick={() => onReject(row.incidentId)}
-          >
-            <X className="h-3.5 w-3.5" />
-            <span className="hidden xl:inline">Reject</span>
-          </ActionBtn>
+          />
         </>
       )}
 
       {isApproved && onExecute && (
-        <ActionBtn
-          variant="execute"
+        <button
+          type="button"
+          title="Execute remediation"
           disabled={disabled}
-          onClick={() => onExecute(row.incidentId)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onExecute(row.incidentId);
+          }}
+          className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-blue-700 shadow-sm transition-colors duration-100 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <Play className="h-3.5 w-3.5 fill-current" />
-          Execute
-        </ActionBtn>
+          <Play className="h-3 w-3 fill-current" />
+          Run
+        </button>
       )}
 
       {isFailed && (
         <ActionBtn
           variant="retry"
+          icon={RefreshCcw}
+          label="Retry execution"
           disabled={disabled}
           onClick={() => onModify(row)}
-        >
-          <RefreshCcw className="h-3.5 w-3.5" />
-          Retry
-        </ActionBtn>
+        />
       )}
     </div>
   );

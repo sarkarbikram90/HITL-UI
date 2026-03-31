@@ -5,7 +5,7 @@ export type Incident = {
   category: string;
   severity: "Low" | "Medium" | "High" | "Critical";
   confidence: number;
-  status: "Pending" | "Approved" | "Rejected" | "Modified";
+  status: "Pending" | "Approved" | "Rejected" | "Modified" | "Executing" | "Completed" | "Failed";
   createdAt: string;
   description: string;
   command: string;
