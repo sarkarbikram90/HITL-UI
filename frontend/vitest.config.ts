@@ -19,10 +19,12 @@ export default defineConfig({
       all: true,
       include: ['src/**/*.{ts,tsx,js,jsx}', 'components/**/*.{ts,tsx,js,jsx}'],
       exclude: ['**/__tests__/**', 'node_modules/**', 'vitest.config.*', 'src/mocks/**', 'mocks/**'],
-      statements: 80,
-      branches: 70,
-      functions: 75,
-      lines: 80,
+      thresholds: {
+        statements: 80,
+        branches: 70,
+        functions: 75,
+        lines: 80,
+      },
     },
   },
 })

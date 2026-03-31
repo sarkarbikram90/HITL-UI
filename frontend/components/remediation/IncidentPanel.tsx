@@ -25,7 +25,13 @@ export default function IncidentPanel({
   onOpenChange: (v: boolean) => void;
   incident: IncidentRemediation | null;
   actionType: "approve" | "reject" | "modify" | "view" | null;
-  onConfirm: (payload?: any) => void;
+  onConfirm: (payload?: {
+    incidentId: string;
+    status?: "Approved" | "Rejected" | "Modified" | "Executing" | "Pending";
+    proposedCommand?: string;
+    reason?: string;
+    comments?: string;
+  }) => void;
 }) {
   const [rejectReason, setRejectReason] = React.useState("");
   const [comments, setComments] = React.useState("");
@@ -162,7 +168,7 @@ export default function IncidentPanel({
                   Description
                 </h4>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  {(incident as any).description || "No description available."}
+                  {(incident as IncidentRemediation & { description?: string }).description || "No description available."}
                 </p>
               </section>
 

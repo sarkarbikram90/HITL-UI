@@ -253,7 +253,7 @@ export async function updateIncident(
     );
   }
 
-  if ((updates as any).status === "Executing") {
+  if (String(updates.status) === "Executing") {
     addAuditEntry(id, "execution:started", "Execution started");
     startExecutionSimulation(id);
   }

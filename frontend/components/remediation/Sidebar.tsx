@@ -34,10 +34,10 @@ export function Sidebar({
   counts: Record<string, number> | undefined;
 }) {
   const searchParams = useSearchParams();
-  const current = (searchParams.get("tab") ?? "incoming") as SidebarTab;
+  const current = (searchParams?.get("tab") ?? "incoming") as SidebarTab;
 
   const hrefFor = (tab: SidebarTab) => {
-    const sp = new URLSearchParams(searchParams.toString());
+    const sp = new URLSearchParams(searchParams?.toString() ?? "");
     sp.set("tab", tab);
     sp.set("page", "1");
     return `/?${sp.toString()}`;

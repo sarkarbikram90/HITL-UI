@@ -57,15 +57,15 @@ export function RemediationConsole() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const tab = parseTab(searchParams.get("tab"));
-  const severity = searchParams.get("severity") ?? "all";
-  const category = searchParams.get("category") ?? "all";
-  const resource = searchParams.get("resource") ?? "all";
-  const search = searchParams.get("search") ?? "";
-  const page = Math.max(1, Number(searchParams.get("page")) || 1);
-  const sortBy = parseSortField(searchParams.get("sortBy"));
-  const sortDir: "asc" | "desc" = searchParams.get("sortDir") === "desc" ? "desc" : "asc";
-  const pageSize = Math.min(100, Math.max(1, Number(searchParams.get("pageSize")) || 20));
+  const tab = parseTab(searchParams?.get("tab") ?? null);
+  const severity = searchParams?.get("severity") ?? "all";
+  const category = searchParams?.get("category") ?? "all";
+  const resource = searchParams?.get("resource") ?? "all";
+  const search = searchParams?.get("search") ?? "";
+  const page = Math.max(1, Number(searchParams?.get("page")) || 1);
+  const sortBy = parseSortField(searchParams?.get("sortBy") ?? null);
+  const sortDir: "asc" | "desc" = searchParams?.get("sortDir") === "desc" ? "desc" : "asc";
+  const pageSize = Math.min(100, Math.max(1, Number(searchParams?.get("pageSize")) || 20));
 
   const listParams = React.useMemo(() => ({
       tab, severity, category, resource, search, page, pageSize, sortBy, sortDir,
@@ -103,7 +103,7 @@ export function RemediationConsole() {
   const [actionType, setActionType] = React.useState<"approve" | "reject" | "modify" | "view" | null>(null);
 
   const pushParams = React.useCallback((patchParams: Record<string, string | number | undefined>) => {
-      const sp = new URLSearchParams(searchParams.toString());
+      const sp = new URLSearchParams(searchParams?.toString() ?? "");
       Object.entries(patchParams).forEach(([k, v]) => {
         if (v === undefined || v === "") sp.delete(k);
         else sp.set(k, String(v));

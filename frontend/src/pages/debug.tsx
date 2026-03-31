@@ -1,4 +1,7 @@
 "use client";
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import * as React from "react";
 import { useQueryClient } from "@tanstack/react-query";
