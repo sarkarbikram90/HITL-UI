@@ -132,7 +132,7 @@ export function MockDebugPanel() {
 
             <button
               onClick={() =>
-                requireIncidentId((id) => forceExecutionResult(id, "failure")) // ← was "fail"
+                requireIncidentId((id) => forceExecutionResult(id, "fail"))
               }
               className="flex-1 bg-red-600 p-1 rounded"
             >

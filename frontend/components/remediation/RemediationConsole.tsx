@@ -15,6 +15,9 @@ import {
   useIncidentMeta,
   usePatchIncident,
 } from "@/hooks/use-incidents-api";
+import { cn } from "@/lib/utils";
+import { CheckCircle2, XCircle } from "lucide-react";
+
 const TABS: SidebarTab[] = [
   "incoming",
   "approved",
@@ -74,6 +77,14 @@ export function RemediationConsole() {
   const { data: meta } = useIncidentMeta();
   const [actionMessage, setActionMessage] = React.useState<{ message: string; type: "success" | "error" | null } | null>(null);
 
+  // Auto-dismiss action messages
+  React.useEffect(() => {
+    if (actionMessage) {
+      const t = setTimeout(() => setActionMessage(null), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [actionMessage]);
+
   const patch = usePatchIncident({
     onSuccess: (_data, variables) => {
       const action = variables.status === "Approved" ? "approved" :
@@ -107,7 +118,7 @@ export function RemediationConsole() {
     setPanelOpen(true);
   };
 
-  // Keyboard shortcuts: A = approve, R = reject, M = modify (when panel open)
+  // Keyboard shortcuts
   React.useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (!panelOpen || !selectedIncident) return;
@@ -138,40 +149,48 @@ export function RemediationConsole() {
   const total = data?.total ?? 0;
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/30">
+    <div className="flex min-h-screen flex-col bg-[var(--color-background)] text-[var(--color-foreground)]">
       <Header />
+
       <div className="flex min-h-0 flex-1">
         <Sidebar counts={countsData?.counts} />
+
         <main className="flex min-w-0 flex-1 flex-col relative overflow-hidden">
+          {/* Toast notification */}
           {actionMessage && (
-            <div className={`m-4 rounded-lg px-4 py-3 text-sm font-medium border ${actionMessage.type === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
-              <div className="flex items-center justify-between gap-3">
-                <div>{actionMessage.message}</div>
-                <button 
-                  onClick={() => setActionMessage(null)}
-                  className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors whitespace-nowrap ${
-                    actionMessage.type === 'success' 
-                      ? 'hover:bg-emerald-100 text-emerald-600' 
-                      : 'hover:bg-red-100 text-red-600'
-                  }`}
-                >
-                  Dismiss
-                </button>
-              </div>
+            <div
+              className={cn(
+                "absolute top-3 right-4 z-40 flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm font-medium shadow-lg animate-in slide-in-from-top-2 fade-in duration-200",
+                actionMessage.type === "success"
+                  ? "bg-emerald-600 text-white"
+                  : "bg-red-600 text-white"
+              )}
+            >
+              {actionMessage.type === "success" ? (
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+              ) : (
+                <XCircle className="h-4 w-4 shrink-0" />
+              )}
+              <span>{actionMessage.message}</span>
+              <button
+                onClick={() => setActionMessage(null)}
+                className="ml-1 p-0.5 rounded hover:bg-white/20 transition-colors duration-100"
+              >
+                <XCircle className="h-3.5 w-3.5" />
+              </button>
             </div>
           )}
+
           {tab === "audit-logs" ? (
-            <div className="flex flex-1 flex-col gap-6 p-8 animate-in fade-in duration-500">
-              <div className="flex items-end justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold tracking-tight">Audit Trail</h2>
-                  <p className="text-muted-foreground">Immutable record of system and human interventions.</p>
-                </div>
+            <div className="flex flex-1 flex-col gap-5 p-6">
+              <div>
+                <h2 className="text-lg font-semibold tracking-tight text-gray-900">Audit Trail</h2>
+                <p className="text-sm text-gray-400 mt-0.5">Immutable record of system and human interventions</p>
               </div>
               <AuditLogPanel />
             </div>
           ) : (
-            <div className="flex flex-1 flex-col animate-in fade-in duration-500">
+            <div className="flex flex-1 flex-col">
               <FilterBar
                 severity={severity} category={category} resource={resource} search={search}
                 severities={meta?.severities ?? ["Low", "Medium", "High", "Critical"]}
@@ -182,7 +201,7 @@ export function RemediationConsole() {
                 onResourceChange={(v) => pushParams({ resource: v, page: 1 })}
                 onSearchChange={(v) => pushParams({ search: v, page: 1 })}
               />
-              <div className="flex-1 overflow-auto p-6 pt-2">
+              <div className="flex-1 overflow-auto p-5 pt-4">
                 <RemediationTable
                   data={rows} total={total} page={page} pageSize={pageSize}
                   sortBy={sortBy} sortDir={sortDir} isLoading={isLoading || isFetching}
@@ -197,9 +216,16 @@ export function RemediationConsole() {
           )}
         </main>
       </div>
+
       <IncidentPanel
         open={panelOpen}
-        onOpenChange={(v) => { if (!v) { setPanelOpen(false); setSelectedIncident(null); setActionType(null); } else setPanelOpen(v); }}
+        onOpenChange={(v) => {
+          if (!v) {
+            setPanelOpen(false);
+            setSelectedIncident(null);
+            setActionType(null);
+          } else setPanelOpen(v);
+        }}
         incident={selectedIncident}
         actionType={actionType}
         onConfirm={(payload) => {

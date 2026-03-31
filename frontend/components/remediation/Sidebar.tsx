@@ -12,6 +12,8 @@ import {
   ListTodo,
   ShieldAlert,
   ShieldCheck,
+  Zap,
+  XCircle,
 } from "lucide-react";
 
 const NAV: { tab: SidebarTab; label: string; icon: typeof Inbox }[] = [
@@ -19,8 +21,10 @@ const NAV: { tab: SidebarTab; label: string; icon: typeof Inbox }[] = [
   { tab: "approved", label: "Approved", icon: ShieldCheck },
   { tab: "rejected", label: "Rejected", icon: ShieldAlert },
   { tab: "modified", label: "Modified", icon: CheckCircle2 },
-  { tab: "pending-task", label: "Pending Task", icon: ListTodo },
+  { tab: "pending-task", label: "Pending", icon: ListTodo },
+  { tab: "executing", label: "Executing", icon: Zap },
   { tab: "completed", label: "Completed", icon: ClipboardList },
+  { tab: "failed", label: "Failed", icon: XCircle },
   { tab: "audit-logs", label: "Audit Logs", icon: FileText },
 ];
 
@@ -32,12 +36,6 @@ export function Sidebar({
   const searchParams = useSearchParams();
   const current = (searchParams.get("tab") ?? "incoming") as SidebarTab;
 
-  const labelFor = (tab: SidebarTab, base: string) => {
-    const n = counts?.[tab];
-    if (n === undefined) return base;
-    return `${base} (${n})`;
-  };
-
   const hrefFor = (tab: SidebarTab) => {
     const sp = new URLSearchParams(searchParams.toString());
     sp.set("tab", tab);
@@ -46,28 +44,46 @@ export function Sidebar({
   };
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col border-r border-gray-200 bg-white">
-      <div className="px-4 py-6">
-        <p className="px-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-          Navigation
+    <aside className="flex w-52 shrink-0 flex-col border-r border-gray-100 bg-gray-50/50">
+      <div className="px-3 py-5">
+        <p className="px-3 text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+          Workflows
         </p>
-        <nav className="mt-4 flex flex-col gap-1" aria-label="Main">
+        <nav className="mt-3 flex flex-col gap-0.5" aria-label="Main">
           {NAV.map(({ tab, label, icon: Icon }) => {
             const active = current === tab;
+            const count = counts?.[tab];
             return (
               <Link
                 key={tab}
                 href={hrefFor(tab)}
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors duration-100",
                   active
-                    ? "bg-gray-100 text-gray-900 font-semibold"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    ? "bg-white text-gray-900 font-medium shadow-sm shadow-gray-200/50"
+                    : "text-gray-500 hover:bg-white/60 hover:text-gray-700"
                 )}
                 aria-current={active ? "page" : undefined}
               >
-                <Icon className="h-4 w-4 shrink-0 flex-none" />
-                <span className="truncate">{labelFor(tab, label)}</span>
+                <Icon
+                  className={cn(
+                    "h-4 w-4 shrink-0",
+                    active ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"
+                  )}
+                />
+                <span className="flex-1 truncate">{label}</span>
+                {count !== undefined && count > 0 && (
+                  <span
+                    className={cn(
+                      "min-w-[20px] rounded-full px-1.5 py-0.5 text-center text-[10px] font-semibold leading-none",
+                      active
+                        ? "bg-blue-50 text-blue-600"
+                        : "bg-gray-100 text-gray-500"
+                    )}
+                  >
+                    {count > 99 ? "99+" : count}
+                  </span>
+                )}
               </Link>
             );
           })}

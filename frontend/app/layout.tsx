@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "./providers";
-import MockDebugPanelLoader from "@/components/mocks/MockDebugPanelLoader"; // ← changed
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,13 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
         <Providers>
           {children}
-          {process.env.NODE_ENV === "development" ? <MockDebugPanelLoader /> : null}  {/* ← changed */}
         </Providers>
       </body>
     </html>

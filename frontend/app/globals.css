@@ -2,23 +2,23 @@
 
 @theme inline {
   /* Modern light theme - inspired by Linear, Vercel, Datadog */
-  --color-background: rgb(250 250 250);
-  --color-foreground: rgb(20 24 30);
+  --color-background: rgb(250 250 252);
+  --color-foreground: rgb(17 20 24);
   --color-card: rgb(255 255 255);
-  --color-card-foreground: rgb(20 24 30);
-  --color-muted: rgb(107 114 128);
-  --color-muted-foreground: rgb(107 114 128);
-  --color-border: rgb(229 231 235);
+  --color-card-foreground: rgb(17 20 24);
+  --color-muted: rgb(113 119 132);
+  --color-muted-foreground: rgb(113 119 132);
+  --color-border: rgb(232 234 238);
   --color-primary: rgb(59 130 246);
   --color-primary-foreground: rgb(255 255 255);
   --color-accent: rgb(249 115 22);
-  --color-success: rgb(34 197 94);
-  --color-warning: rgb(251 146 60);
-  --color-danger: rgb(239 68 68);
-  --color-sidebar: rgb(255 255 255);
+  --color-success: rgb(22 163 74);
+  --color-warning: rgb(234 179 8);
+  --color-danger: rgb(220 38 38);
+  --color-sidebar: rgb(252 252 253);
   --color-sidebar-foreground: rgb(55 65 81);
-  --font-sans: 'Inter', 'Outfit', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Inter', 'Outfit', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
 }
 
 html {
@@ -30,34 +30,37 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar — subtle and modern */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(209 213 219);
-  border-radius: 4px;
+  background: rgb(209 213 219 / 0.6);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(156 163 175);
-}
-
-/* Smooth Transitions */
-* {
-  @apply transition-all duration-150;
+  background: rgb(156 163 175 / 0.8);
 }
 
 /* Selection */
 ::selection {
-  background: rgba(59, 130, 246, 0.1);
+  background: rgba(59, 130, 246, 0.12);
   color: inherit;
+}
+
+/* Focus visible ring — consistent across all interactables */
+:focus-visible {
+  outline: 2px solid rgb(59 130 246 / 0.5);
+  outline-offset: 2px;
 }

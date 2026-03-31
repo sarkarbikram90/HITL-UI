@@ -226,11 +226,25 @@ export function resetExecution(incidentId: string) {
   return true;
 }
 
+export async function fetchAudit(incidentId?: string) {
+  await delay(200);
+  return incidentId
+    ? auditLogs.filter((a) => a.incidentId === incidentId)
+    : auditLogs;
+}
+
+export async function fetchExecution(incidentId: string) {
+  await delay(150);
+  return executions[incidentId] || [];
+}
+
 export default {
   fetchIncidents,
   fetchCounts,
   fetchMeta,
   fetchIncident,
+  fetchAudit,
+  fetchExecution,
   updateIncident,
   resetMockData,
 };
